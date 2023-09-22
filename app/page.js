@@ -1,7 +1,5 @@
-import Image from 'next/image';
-import background from '../public/background.webp';
-import styles from './page.module.css';
 
+import styles from './page.module.css';
 export default function Home() {
   return (
     <main
@@ -12,7 +10,7 @@ export default function Home() {
       }}
     >
       <div className={styles.contentContainer}>
-        <img className={styles.gameLogo} src="/game_logo.png" />
+        <img className={styles.gameLogo} alt='logo' src="/game_logo.png" />
         <div className={styles.playButtonContainer}>
           <button className={styles.playButton}>Play</button>
         </div>

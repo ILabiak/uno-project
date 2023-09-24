@@ -1,0 +1,114 @@
+
+.main {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6rem;
+  min-height: 100vh;
+}
+
+.contentContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: column;
+    position: absolute;
+    height: 100vh;
+    width: 100vw;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 10px;
+      /* border: 2px solid green; */
+}
+
+.playerCardsContainer {
+  /* position: relative; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 30px;
+  border: 2px solid white;
+  height: 25vh;
+  width: 80vw;
+}
+
+.cardsContainer{
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+
+.cardImg {
+  /* margin: 0px 10px; */
+  margin-left: -60px;
+  height: 200px;
+  width: auto;
+  transition: 0.5s;
+  /* border: 2px solid white; */
+}
+
+.cardImg.top:hover {
+  margin-bottom: -30px;
+  transition: 0.5s;
+}
+
+.cardImg.bottom:hover {
+  margin-top: -30px;
+  transition: 0.5s;
+}
+
+.playgroundContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 35vh;
+  width: 80vw;
+  border: 2px solid white;
+}
+
+.playgroundCards {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 2px solid white;
+  height: auto;
+  width: auto;
+  padding: 2px;
+  border-radius: 10px;
+  box-shadow: 0 0 50px 15px #48abe0;
+}
+
+.cardImgStatic {
+  /* margin: 0px 10px; */
+  /* margin-left: -60px; */
+  height: 200px;
+  width: auto;
+  transition: 0.5s;
+  /* border: 2px solid white; */
+}
+
+.addCardImgStatic {
+    height: 200px;
+    width: auto;
+    transition: 0.5s;
+    cursor: pointer;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(50px) translateY(-50px) scale(0.3);
+  }
+  to {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
+}
+
+.fadeIn {
+  animation: fadeIn 0.5s ease-in-out;
+}

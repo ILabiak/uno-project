@@ -30,7 +30,7 @@
   justify-content: center;
   margin: 30px;
   border: 2px solid white;
-  height: 25vh;
+  height: 240px;
   width: 80vw;
 }
 
@@ -39,7 +39,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-
+  transition: 0.5s;
 }
 
 .cardImg {
@@ -98,17 +98,26 @@
     cursor: pointer;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateX(50px) translateY(-50px) scale(0.3);
-  }
-  to {
-    opacity: 1;
-    transform: translate(0, 0) scale(1);
-  }
+.playgroundCardImgStatic {
+  height: 200px;
+  width: auto;
+  transition: 0.5s ease;
+  cursor: pointer;
 }
 
-.fadeIn {
-  animation: fadeIn 0.5s ease-in-out;
+.item-enter {
+  opacity: 0;
+  transition: opacity 5000ms ease-in;
+}
+.item-enter-active {
+  opacity: 1;
+  transition: opacity 5000ms ease-in;
+}
+.item-exit {
+  opacity: 1;
+  transition: opacity 5000ms ease-in;
+}
+.item-exit-active {
+  opacity: 0;
+  transition: opacity 5000ms ease-in;
 }

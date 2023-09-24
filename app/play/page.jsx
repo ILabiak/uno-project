@@ -1,30 +1,24 @@
 
 "use client"
 import './styles.css';
-import React, { useState, useRef, createRef } from 'react';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import React, { useState, useRef, createRef, useEffect } from 'react';
 
 
 export default function Play() {
     const [user1Cards, setUser1Cards] = useState([{
         "img": "/cards/blue-7-card.svg",
-        nodeRef: createRef(null),
     },
     {
         "img": "/cards/red-3-card.svg",
-        nodeRef: createRef(null),
     },
     {
         "img": "/cards/yellow-9-card.svg",
-        nodeRef: createRef(null),
     },
     {
         "img": "/cards/wild-card.svg",
-        nodeRef: createRef(null),
     },
     {
         "img": "/cards/green-draw-two-card.svg",
-        nodeRef: createRef(null),
     }
     ])
     const [user2Cards, setUser2Cards] = useState([{
@@ -43,12 +37,14 @@ export default function Play() {
         "img": "/cards/uno-card.svg"
     }
     ]);
-    const [newlyAddedCardIndex, setNewlyAddedCardIndex] = useState()
     const [playgroundCard, setPlaygroundCard] = useState(null);
     const playgroundCardRef = useRef(null);
-    const moveCardRef = useRef(null);
-    const cardRefs = useRef([])
-    const [selectedCardStyle, setSelectedCardStyle] = useState('none');
+    const cardsRef = useRef([]);
+
+    useEffect(() => {
+        cardsRef.current = cardsRef.current.slice(0, user1Cards.length);
+        console.log('useeffect', cardsRef.current)
+     }, [user1Cards]);
 
 
     async function addCard() {
@@ -60,36 +56,41 @@ export default function Play() {
 
     async function passCard(index) {
         const cardToMove = user1Cards[index];
-
-        // Set the top card to the playgroundCard state
-
-
+        if(cardToMove.played){
+            return;
+        }
+        const oldStyle = cardsRef.current[index].className
 
         // Get the position of the playground card
-        cardRefs.current[index].className = 'playgroundCardImgStatic'
+        cardsRef.current[index].className = 'playgroundCardImgStatic';
         const playgroundCardPosition = playgroundCardRef.current.getBoundingClientRect();
-        const moveCardPosition = cardRefs.current[index].getBoundingClientRect();
-        console.log(playgroundCardPosition)
-        console.log(moveCardPosition)
+        const moveCardPosition = cardsRef.current[index].getBoundingClientRect();
 
         // Calculate the transform property to move the card to the playground card's position
         const transformStyle = `translate(${playgroundCardPosition.left - moveCardPosition.left - 30}px, ${playgroundCardPosition.y - moveCardPosition.y - 10}px)`;
 
         // Apply the transform style to the selected card
-        // setSelectedCardStyle(transformStyle);
-        cardRefs.current[index].style.transform = transformStyle
+        cardsRef.current[index].style.transform = transformStyle;
+        // console.log(cardToMove)
+
+        // Wait for animations to complete
         await new Promise(resolve => setTimeout(resolve, 500));
+
+        // Update the playground card
         setPlaygroundCard(cardToMove);
+
+        // Wait for a short time before removing the card from user1Cards
         await new Promise(resolve => setTimeout(resolve, 50));
-        cardRefs.current[index].remove()
+        cardsRef.current[index].remove()
+        // cardsRef.current = []
+        cardsRef.current.splice(index, 1);
+        cardToMove.played = true
+        
+        // console.log('new', updatedUser1Cards)
 
-        // await new Promise(resolve => setTimeout(resolve, 2000));
-        // const moveCardPosition1 = cardRefs.current[index].getBoundingClientRect();
-        // console.log(moveCardPosition1)
 
-        // Remove the card from user1Cards
-        // setUser1Cards(user1Cards.filter((_, i) => i !== index));
     }
+
 
     return (
         <main
@@ -134,9 +135,8 @@ export default function Play() {
                                     src={el.img}
                                     alt='123'
                                     key={index}
-                                    ref={el => cardRefs.current[index] = el}
-                                    onClick={() => passCard(index)} // Pass the index to passCard
-                                ></img>
+                                    ref={elem => cardsRef.current[index] = elem}
+                                    onClick={() => passCard(index)} />
                             ))
                         }
                     </div>

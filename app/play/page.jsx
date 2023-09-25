@@ -44,7 +44,7 @@ export default function Play() {
     useEffect(() => {
         cardsRef.current = cardsRef.current.slice(0, user1Cards.length);
         console.log('useeffect', cardsRef.current)
-     }, [user1Cards]);
+    }, [user1Cards]);
 
 
     async function addCard() {
@@ -56,7 +56,7 @@ export default function Play() {
 
     async function passCard(index) {
         const cardToMove = user1Cards[index];
-        if(cardToMove.played){
+        if (cardToMove.played) {
             return;
         }
         const oldStyle = cardsRef.current[index].className
@@ -71,7 +71,6 @@ export default function Play() {
 
         // Apply the transform style to the selected card
         cardsRef.current[index].style.transform = transformStyle;
-        // console.log(cardToMove)
 
         // Wait for animations to complete
         await new Promise(resolve => setTimeout(resolve, 500));
@@ -82,13 +81,7 @@ export default function Play() {
         // Wait for a short time before removing the card from user1Cards
         await new Promise(resolve => setTimeout(resolve, 50));
         cardsRef.current[index].remove()
-        // cardsRef.current = []
-        cardsRef.current.splice(index, 1);
         cardToMove.played = true
-        
-        // console.log('new', updatedUser1Cards)
-
-
     }
 
 
@@ -109,6 +102,12 @@ export default function Play() {
                             )
                         }
                     </div>
+                    <div className='playerInfoContainer'>
+                        <div className='playerNameContainer'>
+                            <p>Player 1</p>
+                        </div>
+                        <div className='line'></div>
+                    </div>
                 </div>
                 <div className='playgroundContainer'>
                     <div className='playgroundCards'>
@@ -127,6 +126,13 @@ export default function Play() {
                 </div>
 
                 <div className='playerCardsContainer'>
+                <div className='playerInfoContainer'>
+                <div className='line' style={{marginTop:'0', marginBottom:'5px'}}></div>
+                        <div className='playerNameContainer'>
+                            <p style={{marginLeft: '10px', marginRight: 'auto'}}>Player 2</p>
+                        </div>
+                        
+                    </div>
                     <div className='cardsContainer'>
                         {
                             user1Cards.map((el, index) => (

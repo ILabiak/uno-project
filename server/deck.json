@@ -1,0 +1,544 @@
+{
+  "deck": [
+    {
+      "color": "red",
+      "value": "0",
+      "img": "/cards/red-0-card.svg"
+    },
+    {
+      "color": "red",
+      "value": "1",
+      "img": "/cards/red-1-card.svg"
+    },
+    {
+      "color": "red",
+      "value": "2",
+      "img": "/cards/red-2-card.svg"
+    },
+    {
+      "color": "red",
+      "value": "3",
+      "img": "/cards/red-3-card.svg"
+    },
+    {
+      "color": "red",
+      "value": "4",
+      "img": "/cards/red-4-card.svg"
+    },
+    {
+      "color": "red",
+      "value": "5",
+      "img": "/cards/red-5-card.svg"
+    },
+    {
+      "color": "red",
+      "value": "6",
+      "img": "/cards/red-6-card.svg"
+    },
+    {
+      "color": "red",
+      "value": "7",
+      "img": "/cards/red-7-card.svg"
+    },
+    {
+      "color": "red",
+      "value": "8",
+      "img": "/cards/red-8-card.svg"
+    },
+    {
+      "color": "red",
+      "value": "9",
+      "img": "/cards/red-9-card.svg"
+    },
+    {
+      "color": "red",
+      "value": "1",
+      "img": "/cards/red-1-card.svg"
+    },
+    {
+      "color": "red",
+      "value": "2",
+      "img": "/cards/red-2-card.svg"
+    },
+    {
+      "color": "red",
+      "value": "3",
+      "img": "/cards/red-3-card.svg"
+    },
+    {
+      "color": "red",
+      "value": "4",
+      "img": "/cards/red-4-card.svg"
+    },
+    {
+      "color": "red",
+      "value": "5",
+      "img": "/cards/red-5-card.svg"
+    },
+    {
+      "color": "red",
+      "value": "6",
+      "img": "/cards/red-6-card.svg"
+    },
+    {
+      "color": "red",
+      "value": "7",
+      "img": "/cards/red-7-card.svg"
+    },
+    {
+      "color": "red",
+      "value": "8",
+      "img": "/cards/red-8-card.svg"
+    },
+    {
+      "color": "red",
+      "value": "9",
+      "img": "/cards/red-9-card.svg"
+    },
+    {
+      "color": "red",
+      "value": "skip",
+      "img": "/cards/red-skip-card.svg"
+    },
+    {
+      "color": "red",
+      "value": "skip",
+      "img": "/cards/red-skip-card.svg"
+    },
+    {
+      "color": "red",
+      "value": "reverse",
+      "img": "/cards/red-reverse-card.svg"
+    },
+    {
+      "color": "red",
+      "value": "reverse",
+      "img": "/cards/red-reverse-card.svg"
+    },
+    {
+      "color": "red",
+      "value": "draw",
+      "img": "/cards/red-draw-two-card.svg"
+    },
+    {
+      "color": "red",
+      "value": "draw",
+      "img": "/cards/red-draw-two-card.svg"
+    },
+    {
+      "color": "yellow",
+      "value": "0",
+      "img": "/cards/yellow-0-card.svg"
+    },
+    {
+      "color": "yellow",
+      "value": "1",
+      "img": "/cards/yellow-1-card.svg"
+    },
+    {
+      "color": "yellow",
+      "value": "2",
+      "img": "/cards/yellow-2-card.svg"
+    },
+    {
+      "color": "yellow",
+      "value": "3",
+      "img": "/cards/yellow-3-card.svg"
+    },
+    {
+      "color": "yellow",
+      "value": "4",
+      "img": "/cards/yellow-4-card.svg"
+    },
+    {
+      "color": "yellow",
+      "value": "5",
+      "img": "/cards/yellow-5-card.svg"
+    },
+    {
+      "color": "yellow",
+      "value": "6",
+      "img": "/cards/yellow-6-card.svg"
+    },
+    {
+      "color": "yellow",
+      "value": "7",
+      "img": "/cards/yellow-7-card.svg"
+    },
+    {
+      "color": "yellow",
+      "value": "8",
+      "img": "/cards/yellow-8-card.svg"
+    },
+    {
+      "color": "yellow",
+      "value": "9",
+      "img": "/cards/yellow-9-card.svg"
+    },
+    {
+      "color": "yellow",
+      "value": "1",
+      "img": "/cards/yellow-1-card.svg"
+    },
+    {
+      "color": "yellow",
+      "value": "2",
+      "img": "/cards/yellow-2-card.svg"
+    },
+    {
+      "color": "yellow",
+      "value": "3",
+      "img": "/cards/yellow-3-card.svg"
+    },
+    {
+      "color": "yellow",
+      "value": "4",
+      "img": "/cards/yellow-4-card.svg"
+    },
+    {
+      "color": "yellow",
+      "value": "5",
+      "img": "/cards/yellow-5-card.svg"
+    },
+    {
+      "color": "yellow",
+      "value": "6",
+      "img": "/cards/yellow-6-card.svg"
+    },
+    {
+      "color": "yellow",
+      "value": "7",
+      "img": "/cards/yellow-7-card.svg"
+    },
+    {
+      "color": "yellow",
+      "value": "8",
+      "img": "/cards/yellow-8-card.svg"
+    },
+    {
+      "color": "yellow",
+      "value": "9",
+      "img": "/cards/yellow-9-card.svg"
+    },
+    {
+      "color": "yellow",
+      "value": "skip",
+      "img": "/cards/yellow-skip-card.svg"
+    },
+    {
+      "color": "yellow",
+      "value": "skip",
+      "img": "/cards/yellow-skip-card.svg"
+    },
+    {
+      "color": "yellow",
+      "value": "reverse",
+      "img": "/cards/yellow-reverse-card.svg"
+    },
+    {
+      "color": "yellow",
+      "value": "reverse",
+      "img": "/cards/yellow-reverse-card.svg"
+    },
+    {
+      "color": "yellow",
+      "value": "draw",
+      "img": "/cards/yellow-draw-two-card.svg"
+    },
+    {
+      "color": "yellow",
+      "value": "draw",
+      "img": "/cards/yellow-draw-two-card.svg"
+    },
+    {
+      "color": "green",
+      "value": "0",
+      "img": "/cards/green-0-card.svg"
+    },
+    {
+      "color": "green",
+      "value": "1",
+      "img": "/cards/green-1-card.svg"
+    },
+    {
+      "color": "green",
+      "value": "2",
+      "img": "/cards/green-2-card.svg"
+    },
+    {
+      "color": "green",
+      "value": "3",
+      "img": "/cards/green-3-card.svg"
+    },
+    {
+      "color": "green",
+      "value": "4",
+      "img": "/cards/green-4-card.svg"
+    },
+    {
+      "color": "green",
+      "value": "5",
+      "img": "/cards/green-5-card.svg"
+    },
+    {
+      "color": "green",
+      "value": "6",
+      "img": "/cards/green-6-card.svg"
+    },
+    {
+      "color": "green",
+      "value": "7",
+      "img": "/cards/green-7-card.svg"
+    },
+    {
+      "color": "green",
+      "value": "8",
+      "img": "/cards/green-8-card.svg"
+    },
+    {
+      "color": "green",
+      "value": "9",
+      "img": "/cards/green-9-card.svg"
+    },
+    {
+      "color": "green",
+      "value": "1",
+      "img": "/cards/green-1-card.svg"
+    },
+    {
+      "color": "green",
+      "value": "2",
+      "img": "/cards/green-2-card.svg"
+    },
+    {
+      "color": "green",
+      "value": "3",
+      "img": "/cards/green-3-card.svg"
+    },
+    {
+      "color": "green",
+      "value": "4",
+      "img": "/cards/green-4-card.svg"
+    },
+    {
+      "color": "green",
+      "value": "5",
+      "img": "/cards/green-5-card.svg"
+    },
+    {
+      "color": "green",
+      "value": "6",
+      "img": "/cards/green-6-card.svg"
+    },
+    {
+      "color": "green",
+      "value": "7",
+      "img": "/cards/green-7-card.svg"
+    },
+    {
+      "color": "green",
+      "value": "8",
+      "img": "/cards/green-8-card.svg"
+    },
+    {
+      "color": "green",
+      "value": "9",
+      "img": "/cards/green-9-card.svg"
+    },
+    {
+      "color": "green",
+      "value": "skip",
+      "img": "/cards/green-skip-card.svg"
+    },
+    {
+      "color": "green",
+      "value": "skip",
+      "img": "/cards/green-skip-card.svg"
+    },
+    {
+      "color": "green",
+      "value": "reverse",
+      "img": "/cards/green-reverse-card.svg"
+    },
+    {
+      "color": "green",
+      "value": "reverse",
+      "img": "/cards/green-reverse-card.svg"
+    },
+    {
+      "color": "green",
+      "value": "draw",
+      "img": "/cards/green-draw-two-card.svg"
+    },
+    {
+      "color": "green",
+      "value": "draw",
+      "img": "/cards/green-draw-two-card.svg"
+    },
+    {
+      "color": "blue",
+      "value": "0",
+      "img": "/cards/blue-0-card.svg"
+    },
+    {
+      "color": "blue",
+      "value": "1",
+      "img": "/cards/blue-1-card.svg"
+    },
+    {
+      "color": "blue",
+      "value": "2",
+      "img": "/cards/blue-2-card.svg"
+    },
+    {
+      "color": "blue",
+      "value": "3",
+      "img": "/cards/blue-3-card.svg"
+    },
+    {
+      "color": "blue",
+      "value": "4",
+      "img": "/cards/blue-4-card.svg"
+    },
+    {
+      "color": "blue",
+      "value": "5",
+      "img": "/cards/blue-5-card.svg"
+    },
+    {
+      "color": "blue",
+      "value": "6",
+      "img": "/cards/blue-6-card.svg"
+    },
+    {
+      "color": "blue",
+      "value": "7",
+      "img": "/cards/blue-7-card.svg"
+    },
+    {
+      "color": "blue",
+      "value": "8",
+      "img": "/cards/blue-8-card.svg"
+    },
+    {
+      "color": "blue",
+      "value": "9",
+      "img": "/cards/blue-9-card.svg"
+    },
+    {
+      "color": "blue",
+      "value": "1",
+      "img": "/cards/blue-1-card.svg"
+    },
+    {
+      "color": "blue",
+      "value": "2",
+      "img": "/cards/blue-2-card.svg"
+    },
+    {
+      "color": "blue",
+      "value": "3",
+      "img": "/cards/blue-3-card.svg"
+    },
+    {
+      "color": "blue",
+      "value": "4",
+      "img": "/cards/blue-4-card.svg"
+    },
+    {
+      "color": "blue",
+      "value": "5",
+      "img": "/cards/blue-5-card.svg"
+    },
+    {
+      "color": "blue",
+      "value": "6",
+      "img": "/cards/blue-6-card.svg"
+    },
+    {
+      "color": "blue",
+      "value": "7",
+      "img": "/cards/blue-7-card.svg"
+    },
+    {
+      "color": "blue",
+      "value": "8",
+      "img": "/cards/blue-8-card.svg"
+    },
+    {
+      "color": "blue",
+      "value": "9",
+      "img": "/cards/blue-9-card.svg"
+    },
+    {
+      "color": "blue",
+      "value": "skip",
+      "img": "/cards/blue-skip-card.svg"
+    },
+    {
+      "color": "blue",
+      "value": "skip",
+      "img": "/cards/blue-skip-card.svg"
+    },
+    {
+      "color": "blue",
+      "value": "reverse",
+      "img": "/cards/blue-reverse-card.svg"
+    },
+    {
+      "color": "blue",
+      "value": "reverse",
+      "img": "/cards/blue-reverse-card.svg"
+    },
+    {
+      "color": "blue",
+      "value": "draw",
+      "img": "/cards/blue-draw-two-card.svg"
+    },
+    {
+      "color": "blue",
+      "value": "draw",
+      "img": "/cards/blue-draw-two-card.svg"
+    },
+    {
+      "color": "wild",
+      "value": "Wild",
+      "img": "/cards/wild-card.svg"
+    },
+    {
+      "color": "wild",
+      "value": "Wild",
+      "img": "/cards/wild-card.svg"
+    },
+    {
+      "color": "wild",
+      "value": "Wild",
+      "img": "/cards/wild-card.svg"
+    },
+    {
+      "color": "wild",
+      "value": "Wild",
+      "img": "/cards/wild-card.svg"
+    },
+    {
+      "color": "wild",
+      "value": "Wild Draw Four",
+      "img": "/cards/wild-draw-four-card.svg"
+    },
+    {
+      "color": "wild",
+      "value": "Wild Draw Four",
+      "img": "/cards/wild-draw-four-card.svg"
+    },
+    {
+      "color": "wild",
+      "value": "Wild Draw Four",
+      "img": "/cards/wild-draw-four-card.svg"
+    },
+    {
+      "color": "wild",
+      "value": "Wild Draw Four",
+      "img": "/cards/wild-draw-four-card.svg"
+    }
+  ]
+}

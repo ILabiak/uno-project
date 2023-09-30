@@ -1,51 +1,70 @@
 
 "use client"
 import './styles.css';
-import React, { useState, useRef, createRef, useEffect } from 'react';
+// import { useSearchParams } from "next/navigation";
+import React, { useState, useRef, useEffect } from 'react';
+import io from 'socket.io-client';
+import { useCookies } from 'react-cookie';
+import { v4 as uuidv4 } from 'uuid';
 
 
-export default function Play() {
-    const [user1Cards, setUser1Cards] = useState([{
-        "img": "/cards/blue-7-card.svg",
-    },
-    {
-        "img": "/cards/red-3-card.svg",
-    },
-    {
-        "img": "/cards/yellow-9-card.svg",
-    },
-    {
-        "img": "/cards/wild-card.svg",
-    },
-    {
-        "img": "/cards/green-draw-two-card.svg",
-    }
-    ])
-    const [user2Cards, setUser2Cards] = useState([{
-        "img": "/cards/red-5-card.svg"
-    },
-    {
-        "img": "/cards/yellow-1-card.svg"
-    },
-    {
-        "img": "/cards/green-7-card.svg"
-    },
-    {
-        "img": "/cards/uno-card.svg"
-    },
-    {
-        "img": "/cards/uno-card.svg"
-    }
-    ]);
+export default function Play(params) {
+    const [cookies, setCookie] = useCookies();
+    const [socket, setSocket] = useState(null);
+    const [playerId, setPlayerId] = useState()
+    // const searchParams = useSearchParams()
+    // const { room } = searchParams.get('room');
+    const [user1Cards, setUser1Cards] = useState([]);
+    const [user2Cards, setUser2Cards] = useState([]);
     const [playgroundCard, setPlaygroundCard] = useState(null);
     const playgroundCardRef = useRef(null);
     const [newlyAddedCardIndex, setNewlyAddedCardIndex] = useState()
     const cardsRef = useRef([]);
 
     useEffect(() => {
-        cardsRef.current = cardsRef.current.slice(0, user1Cards.length);
-        console.log('useeffect', cardsRef.current)
-    }, [user1Cards]);
+
+        const socketInstance = io.connect('http://localhost:8080/',);
+
+        socketInstance.on('connect', async() => {
+            console.log('Connected to the server');
+            let id;
+            if(!cookies.playerId){
+                console.log('no Cookies')
+                id = await uuidv4()
+                setCookie('playerId', id, {
+                    path: '/',
+                    httpOnly: false,
+                    expires: new Date(Date.now() + 900000000)
+                })
+            }
+            id = cookies.playerId;
+            await setPlayerId(id);
+            console.log('playerId ', id)
+            socketInstance.emit('play', { playerId: id})
+
+        });
+
+        socketInstance.on('disconnect', () => {
+            console.log('Disconnected from the server');
+        });
+
+        socketInstance.on('cardsDealt', (data) => {
+            console.log('Cards dealt', data);
+            if (data[cookies.playerId]) {
+                setUser1Cards(data[cookies.playerId].cards)
+            }
+        });
+
+        setSocket(socketInstance);
+
+        return () => {
+            if (socketInstance) {
+                socketInstance.disconnect();
+            }
+        };
+    }, []);
+
+
 
 
     async function addCard() {
@@ -90,7 +109,7 @@ export default function Play() {
         <main
             className='main'
             style={{
-                backgroundImage: `url(game-background1.jpeg)`,
+                backgroundImage: `url(../game-background1.jpeg)`,
                 backgroundSize: 'cover',
             }}
         >
@@ -105,7 +124,7 @@ export default function Play() {
                     </div>
                     <div className='playerInfoContainer'>
                         <div className='playerNameContainer'>
-                            <p>Player 1</p>
+                            <p>Player 2</p>
                         </div>
                         <div className='line'></div>
                     </div>
@@ -127,12 +146,12 @@ export default function Play() {
                 </div>
 
                 <div className='playerCardsContainer'>
-                <div className='playerInfoContainer'>
-                <div className='line' style={{marginTop:'0', marginBottom:'5px'}}></div>
+                    <div className='playerInfoContainer'>
+                        <div className='line' style={{ marginTop: '0', marginBottom: '5px' }}></div>
                         <div className='playerNameContainer'>
-                            <p style={{marginLeft: '10px', marginRight: 'auto'}}>Player 2</p>
+                            <p style={{ marginLeft: '10px', marginRight: 'auto' }}>Player 1</p>
                         </div>
-                        
+
                     </div>
                     <div className='cardsContainer'>
                         {

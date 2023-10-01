@@ -11,24 +11,25 @@ import { v4 as uuidv4 } from 'uuid';
 export default function Play(params) {
     const [cookies, setCookie] = useCookies();
     const [socket, setSocket] = useState(null);
-    const [playerId, setPlayerId] = useState()
-    // const searchParams = useSearchParams()
-    // const { room } = searchParams.get('room');
-    const [user1Cards, setUser1Cards] = useState([]);
-    const [user2Cards, setUser2Cards] = useState([]);
+    const [gameData, setGameData] = useState({ players: {}, gameCards: [] });
+    const [player1Id, setPlayer1Id] = useState();
+    const [player2Id, setPlayer2Id] = useState();
+    const [player1canMove, setPlayer1canMove] = useState(false);
+    const [player2canMove, setPlayer2canMove] = useState(false);
+    // const [user1Cards, setUser1Cards] = useState([]);
+    // const [user2Cards, setUser2Cards] = useState([]);
     const [playgroundCard, setPlaygroundCard] = useState(null);
     const playgroundCardRef = useRef(null);
     const [newlyAddedCardIndex, setNewlyAddedCardIndex] = useState()
     const cardsRef = useRef([]);
 
     useEffect(() => {
-
         const socketInstance = io.connect('http://localhost:8080/',);
 
-        socketInstance.on('connect', async() => {
+        socketInstance.on('connect', async () => {
             console.log('Connected to the server');
             let id;
-            if(!cookies.playerId){
+            if (!cookies.playerId) {
                 console.log('no Cookies')
                 id = await uuidv4()
                 setCookie('playerId', id, {
@@ -38,9 +39,8 @@ export default function Play(params) {
                 })
             }
             id = cookies.playerId;
-            await setPlayerId(id);
             console.log('playerId ', id)
-            socketInstance.emit('play', { playerId: id})
+            socketInstance.emit('play', { playerId: id })
 
         });
 
@@ -49,11 +49,20 @@ export default function Play(params) {
         });
 
         socketInstance.on('cardsDealt', (data) => {
-            console.log('Cards dealt', data);
-            if (data[cookies.playerId]) {
-                setUser1Cards(data[cookies.playerId].cards)
+            // console.log('Cards dealt', data);
+            setGameData(data)
+            for (const player in data.players) {
+                if (player === cookies.playerId) {
+                    setPlayer1Id(player)
+                } else {
+                    setPlayer2Id(player)
+                }
             }
         });
+
+        socketInstance.on('cardAdded', (data) => {
+            setGameData(data)
+        })
 
         setSocket(socketInstance);
 
@@ -64,14 +73,21 @@ export default function Play(params) {
         };
     }, []);
 
+    useEffect(() => {
+        setPlayer1canMove(gameData.players[player1Id]?.canMove)
+        setPlayer2canMove(gameData.players[player2Id]?.canMove)
+        console.log(gameData)
+    }, [gameData])
+
 
 
 
     async function addCard() {
-        setUser1Cards([...user1Cards, {
-            "img": "/cards/red-3-card.svg"
-        }])
-        setNewlyAddedCardIndex(user1Cards.length)
+        socket.emit('addCard', { playerId: player1Id })
+        // setUser1Cards([...user1Cards, {
+        //     "img": "/cards/red-3-card.svg"
+        // }])
+        // setNewlyAddedCardIndex(user1Cards.length)
     }
 
     async function passCard(index) {
@@ -116,14 +132,19 @@ export default function Play(params) {
             <div className='contentContainer'>
                 <div className='playerCardsContainer'>
                     <div className='cardsContainer'>
-                        {
-                            user2Cards.map((el, index) => (<img className={`cardImg top`}
-                                src={el.img} alt='123' key={index}></img>)
+                        {gameData.players[player2Id]?.cards && (
+                            gameData.players[player2Id].cards.map((el, index) => (<img className={`cardImg top fadeIn`}
+                                src='/cards/uno-card.svg' alt='123' key={index}></img>)
                             )
+                        )
                         }
                     </div>
                     <div className='playerInfoContainer'>
                         <div className='playerNameContainer'>
+                            {player2canMove && (
+                                <div className='canMove' style={{ marginRight: '0px', marginLeft: '10px' }}></div>
+                            )}
+
                             <p>Player 2</p>
                         </div>
                         <div className='line'></div>
@@ -136,8 +157,8 @@ export default function Play(params) {
                             className='playgroundCardImgStatic'
                             id='playgroundCard'
                             ref={playgroundCardRef}
-                            src={playgroundCard ? playgroundCard.img : "/cards/yellow-1-card.svg"}
-                            alt={playgroundCard ? "playground-card" : "green-7"}
+                            src={playgroundCard ? playgroundCard.img : "/cards/empty-card.svg"}
+                            alt={playgroundCard ? "playground-card" : "somecard"}
                         ></img>
                     </div>
                     <div className='playgroundControls'>
@@ -150,20 +171,25 @@ export default function Play(params) {
                         <div className='line' style={{ marginTop: '0', marginBottom: '5px' }}></div>
                         <div className='playerNameContainer'>
                             <p style={{ marginLeft: '10px', marginRight: 'auto' }}>Player 1</p>
+                            {player1canMove && (
+                                <div className='canMove'></div>
+                            )}
                         </div>
 
                     </div>
                     <div className='cardsContainer'>
-                        {
-                            user1Cards.map((el, index) => (
+                        {gameData.players[player1Id]?.cards && (
+                            gameData.players[player1Id].cards.map((el, index) => (
                                 <img
-                                    className={`cardImg bottom ${index === newlyAddedCardIndex ? 'fadeIn' : ''}`}
+                                    // className={`cardImg bottom ${index === newlyAddedCardIndex ? 'fadeIn' : ''}`}
+                                    className={`cardImg bottom fadeIn`}
                                     src={el.img}
                                     alt='123'
                                     key={index}
                                     ref={elem => cardsRef.current[index] = elem}
                                     onClick={() => passCard(index)} />
                             ))
+                        )
                         }
                     </div>
                 </div>

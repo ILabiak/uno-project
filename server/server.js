@@ -14,8 +14,12 @@ let cardDeck = require('./deck.json')?.deck;
 
 const userLimit = 2;
 
-let gameCards = [];
-const players = {};
+const gameData = {
+  player1: null,
+  player2: null,
+  players: {},
+  gameCards: [],
+};
 
 io.on('connection', (socket) => {
   console.log('user connected');
@@ -30,56 +34,70 @@ io.on('connection', (socket) => {
     const playerId = data.playerId;
     console.log(playerId);
 
-    if (players.hasOwnProperty(playerId)) {
-      players[playerId].socket = socket.id;
+    if (gameData.players.hasOwnProperty(playerId)) {
+      gameData.players[playerId].socket = socket.id;
       console.log('user exists');
     } else {
-      if (Object.keys(players).length >= userLimit) {
+      if (Object.keys(gameData.players).length >= userLimit) {
         console.log('User limit reached. Cannot accept more connections.');
         socket.disconnect(true); // Disconnect the new user
         return;
       }
       console.log('user does not exist');
-      console.log(Object.keys(players));
-      players[playerId] = {
+      console.log(Object.keys(gameData.players));
+      gameData.players[playerId] = {
         name: '1',
         socket: socket.id,
         cards: [],
+        canMove: Object.keys(gameData.players).length == 1 ? true : false,
       };
+      Object.keys(gameData.players).length == 1
+        ? (gameData.player1 = playerId)
+        : (gameData.player2 = playerId);
     }
 
     if (
-      players[playerId].cards.length === 0 &&
-      Object.keys(players).length == userLimit
+      gameData.players[playerId].cards.length === 0 &&
+      Object.keys(gameData.players).length == userLimit
     ) {
-      gameCards = shuffle(cardDeck);
+      gameData.gameCards = shuffle(cardDeck);
 
-      for (const playerId in players) {
-        if (players.hasOwnProperty(playerId)) {
+      for (const playerId in gameData.players) {
+        if (gameData.players.hasOwnProperty(playerId)) {
           for (let i = 0; i < 7; i++) {
-            if (gameCards.length > 0) {
-              const card = gameCards.pop();
-              players[playerId].cards.push(card);
+            if (gameData.gameCards.length > 0) {
+              const card = gameData.gameCards.pop();
+              gameData.players[playerId].cards.push(card);
             }
           }
         }
       }
-
     }
-    io.emit('cardsDealt', players);
+
+    socket.on('addCard', function (data) {
+      const playerId = data.playerId;
+      if (!gameData.players[playerId] || gameData.players[playerId]?.canMove === false)
+        return;
+      // console.log('user can move');
+      if (gameData.gameCards.length > 0) {
+        const card = gameData.gameCards.pop();
+        gameData.players[playerId].cards.push(card);
+        // console.log('cards', gameData.players[playerId].cards)
+        for (const playerId in gameData.players) {
+          gameData.players[playerId].canMove = !gameData.players[playerId].canMove
+        }
+        io.emit('cardAdded', gameData);
+
+      }
+    });
+
+    io.emit('cardsDealt', gameData);
   });
 
   socket.on('disconnect', function () {
     console.log('user disconnected');
-    if (Object.keys(players).length == 0) return;
-    // for (const playerId in players) {
-    //     players[playerId].cards = [];
-    //   if (players[playerId].socket == socket.id) {
-    //     // delete players[playerId];
-    //   }
-    // }
-    console.log('gamecards ', gameCards.length);
-    gameCards = shuffle([...cardDeck]);
+    // if (Object.keys(gameData.players).length == 0) return;
+    // console.log('gamecards ', gameData.gameCards.length);
   });
 });
 

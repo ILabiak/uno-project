@@ -19,18 +19,14 @@ const gameData = {
   player2: null,
   players: {},
   gameCards: [],
+  currentCard: {},
+  move: {}
 };
 
 io.on('connection', (socket) => {
   console.log('user connected');
 
   socket.on('play', function (data) {
-    // if (Object.keys(players).length >= userLimit) {
-    //   console.log('User limit reached. Cannot accept more connections.');
-    //   socket.disconnect(true); // Disconnect the new user
-    //   return;
-    // }
-    // console.log('on', data);
     const playerId = data.playerId;
     console.log(playerId);
 
@@ -44,7 +40,7 @@ io.on('connection', (socket) => {
         return;
       }
       console.log('user does not exist');
-      console.log(Object.keys(gameData.players));
+      // console.log(Object.keys(gameData.players));
       gameData.players[playerId] = {
         name: '1',
         socket: socket.id,
@@ -87,9 +83,24 @@ io.on('connection', (socket) => {
           gameData.players[playerId].canMove = !gameData.players[playerId].canMove
         }
         io.emit('cardAdded', gameData);
-
       }
     });
+
+    socket.on('passcard', function (data) {
+      const playerId = data.playerId;
+      const cardIndex = data.cardIndex
+      let card = gameData.players[playerId].cards[cardIndex]
+      if (!gameData.players[playerId] || card === undefined) return;
+      // if(Object.keys(gameData.currentCard).length === 0){
+        gameData.currentCard = {...card}
+        gameData.players[playerId].cards[cardIndex].played = true
+        console.log(gameData.players[playerId].cards[cardIndex])
+      // }
+      gameData.move = {playerId,cardIndex}
+      // console.log(gameData)
+      io.emit('cardPassed', gameData)
+
+    })
 
     io.emit('cardsDealt', gameData);
   });

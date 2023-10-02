@@ -129,6 +129,7 @@
 
 
 .playgroundCards {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -139,6 +140,75 @@
   border-radius: 10px;
   box-shadow: 0 0 50px 15px #48abe0;
   
+}
+
+.chooseColorContainer{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 50px;
+  height: 80%;
+  width: 200px;
+  /* border: 2px solid white; */
+}
+
+.colorsGrid {
+  display: grid;
+  height: auto;
+  width: auto;
+  gap: 10px;
+  grid-template-columns: 70px 70px;
+  grid-template-rows: auto auto;
+  /* grid-template-rows: 70px 70px; */
+  /* border: 2px solid white; */
+}
+
+.colorWrap{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 70px;
+  width: 70px;
+  align-self: center;
+  /* border: 2px solid white; */
+}
+
+.color {
+  /* display: flex; */
+  text-align: center;
+  height: 40px;
+  width: 40px;
+  background: #fff;
+  cursor: pointer;
+  transform:rotate(45deg);
+  border-radius: 5px;
+  box-shadow: 0 0 50px 15px #48abe0;
+  font-size: 2rem;
+  /* border: 2px solid white; */
+}
+
+.color p {
+  transform:rotate(-45deg);
+}
+
+.playgroundControlsContainer{
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-left: 50px;
+  height: 80%;
+  width: 200px;
+  /* border: 2px solid white; */
+}
+
+.playgroundControls{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: auto;
+  /* border: 2px solid white; */
 }
 
 .cardImgStatic {

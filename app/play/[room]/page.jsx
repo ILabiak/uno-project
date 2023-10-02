@@ -10,6 +10,7 @@ import { v4 as uuidv4 } from 'uuid';
 export default function Play(params) {
     const [cookies, setCookie] = useCookies();
     const [socket, setSocket] = useState(null);
+    const [chooseColor, setChooseColor] = useState(false)
     const [currentCard, setCurrentCard] = useState({ img: ' /cards/empty-card.svg' });
     const [gameData, setGameData] = useState({ players: {}, gameCards: [] });
     const [player1Id, setPlayer1Id] = useState();
@@ -68,6 +69,11 @@ export default function Play(params) {
             setCardPassedEventOccurred(true);
         })
 
+        socketInstance.on('chooseColor', async (data) => {
+            console.log('chooseColor')
+            setGameData(data)
+        })
+
 
         setSocket(socketInstance);
 
@@ -82,10 +88,13 @@ export default function Play(params) {
     useEffect(() => {
         setPlayer1canMove(gameData.players[player1Id]?.canMove)
         setPlayer2canMove(gameData.players[player2Id]?.canMove)
-        console.log(gameData)
+        // console.log(gameData)
     }, [gameData])
 
     useEffect(() => {
+        if (gameData?.players[player1Id]?.chooseColor) {
+            setChooseColor(true)
+        }
         if (cardPassedEventOccurred && Object.keys(gameData.move).length !== 0) {
             // console.log(gameData.move)
             moveCard(gameData.move.cardIndex, gameData.move.playerId);
@@ -173,6 +182,22 @@ export default function Play(params) {
                     </div>
                 </div>
                 <div className='playgroundContainer'>
+                    <div className='chooseColorContainer'>
+                        <div className='colorsGrid'>
+                            <div className='colorWrap'>
+                                <div className='color' style={{ backgroundColor: '#ffaa01' }}></div>
+                            </div>
+                            <div className='colorWrap'>
+                                <div className='color' style={{ backgroundColor: '#ff5655' }}></div>
+                            </div>
+                            <div className='colorWrap'>
+                                <div className='color' style={{ backgroundColor: '#5555ff' }}></div>
+                            </div>
+                            <div className='colorWrap'>
+                                <div className='color' style={{ backgroundColor: '#56aa56' }}></div>
+                            </div>
+                        </div>
+                    </div>
                     <div className='playgroundCards'>
                         <img onClick={addCard} className='addCardImgStatic' src="/cards/uno-card.svg" alt="green-7"></img>
                         <img
@@ -183,8 +208,18 @@ export default function Play(params) {
                             alt={"playground-card"}
                         ></img>
                     </div>
-                    <div className='playgroundControls'>
-
+                    <div className='playgroundControlsContainer'>
+                        <div className='playgroundControls'>
+                        <div className='colorWrap'>
+                            <div className='color' style={{ backgroundColor: '#fff' }}></div>
+                        </div>
+                        <div className='colorWrap'>
+                            <div className='color' style={{ backgroundColor: '#000' }}>
+                                <p>1</p>
+                            </div>
+                        </div>
+                        </div>
+ 
                     </div>
                 </div>
 
@@ -193,6 +228,7 @@ export default function Play(params) {
                         <div className='line' style={{ marginTop: '0', marginBottom: '5px' }}></div>
                         <div className='playerNameContainer'>
                             <p style={{ marginLeft: '10px', marginRight: 'auto' }}>Player 1</p>
+                            {chooseColor && (<p style={{ marginLeft: '10px', marginRight: 'auto' }}>chooseColor</p>)}
                             {player1canMove && (
                                 <div className='canMove'></div>
                             )}

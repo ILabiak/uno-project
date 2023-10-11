@@ -173,6 +173,7 @@ export default function Play(params) {
             style={{
                 backgroundImage: `url(../game-background1.jpeg)`,
                 backgroundSize: 'cover',
+                backgroundPosition: 'center'
             }}
         >
             <div className='contentContainer'>
@@ -239,7 +240,7 @@ export default function Play(params) {
                                 }}></div>
                             </div>
                             <div className='colorWrap'>
-                                <div className='color' onClick={() => callUno()} style={{ backgroundColor: '#000' }}>
+                                <div className='colorUno' onClick={() => callUno()} style={{ backgroundColor: '#000' }}>
                                     <p>1</p>
                                 </div>
                             </div>

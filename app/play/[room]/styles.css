@@ -192,8 +192,34 @@
   filter: brightness(1.25);
 }
 
-.color p {
+.colorUno{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 40px;
+  width: 40px;
+  cursor: pointer;
+  transform:rotate(45deg);
+  border-radius: 5px;
+  background: linear-gradient(to right, #ff5655 0%, #ff5655 50%, #ffaa01 50%, #ffaa01 100%), linear-gradient(to right, #56aa56 0%, #56aa56 50%, #5555ff 50%, #5555ff 100%);
+  background-size: 100% 50%;
+  background-position: center top, center bottom;
+  background-repeat: no-repeat;
+  box-shadow: 0 0 50px 15px #48abe0;
+  font-size: 2.5rem;
+  border: 1.5px black solid;
+}
+
+.colorUno:hover {
+  box-shadow: 0 0 30px 15px #48abe0;
+  filter: brightness(1.25);
+}
+
+.colorUno p {
   transform:rotate(-45deg);
+  font-weight: bold;
+  -webkit-text-stroke: 2px #000000;
 }
 
 .playgroundControlsContainer{

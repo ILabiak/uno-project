@@ -19,7 +19,7 @@ const gameData = {
   player2: null,
   players: {},
   gameCards: [],
-  currentCard: {},
+  currentCard: { img: '/cards/empty-card.svg', color: 'white' },
   move: {},
 };
 
@@ -47,6 +47,7 @@ io.on('connection', (socket) => {
         cards: [],
         canMove: Object.keys(gameData.players).length == 1 ? true : false,
         chooseColor: false,
+        calledUNO: false,
       };
       Object.keys(gameData.players).length == 1
         ? (gameData.player1 = playerId)
@@ -69,51 +70,95 @@ io.on('connection', (socket) => {
           }
         }
       }
+      while (
+        gameData.currentCard.img == '/cards/empty-card.svg' ||
+        gameData.currentCard.color == 'wild'
+      ) {
+        gameData.currentCard = gameData.gameCards.pop();
+      }
     }
+    io.emit('cardsDealt', gameData);
+  });
 
-    socket.on('addCard', function (data) {
-      const playerId = data.playerId;
-      if (
-        !gameData.players[playerId] ||
-        gameData.players[playerId]?.canMove === false
-      )
-        return;
-      // console.log('user can move');
-      if (gameData.gameCards.length > 0) {
-        const card = gameData.gameCards.pop();
-        gameData.players[playerId].cards.push(card);
-        // console.log('cards', gameData.players[playerId].cards)
+  socket.on('addCard', function (data) {
+    const playerId = data.playerId;
+    if (
+      !gameData.players[playerId] ||
+      !gameData.players[playerId]?.canMove
+    ){
+      // console.log('card can\'t be added')
+      return
+    }
+    addCard(playerId)
+  });
+
+  socket.on('playerChooseColor', function (data) {
+    const { playerId, color } = data;
+    if (
+      gameData.players[playerId].canMove &&
+      gameData.players[playerId].chooseColor
+    ) {
+      gameData.currentCard.color = color;
+      gameData.players[playerId].chooseColor = false;
+      if (gameData.currentCard.value != 'Wild Draw Four') {
         for (const playerId in gameData.players) {
           gameData.players[playerId].canMove =
             !gameData.players[playerId].canMove;
         }
-        io.emit('cardAdded', gameData);
       }
-    });
+      io.emit('colorChosen', gameData);
+    }
+  });
 
-    socket.on('passcard', function (data) {
-      const playerId = data.playerId;
-      const cardIndex = data.cardIndex;
-      let card = gameData.players[playerId].cards[cardIndex];
-      if (
-        !gameData.players[playerId] ||
-        card === undefined ||
-        !gameData.players[playerId].canMove
-      )
-        return;
-      const move = moveCard(cardIndex, playerId);
-      if (move) {
-        io.emit('cardPassed', gameData);
-      }
-    });
+  socket.on('passcard', async function (data) {
+    const playerId = data.playerId;
+    const cardIndex = data.cardIndex;
+    let card = gameData.players[playerId].cards[cardIndex];
+    if (
+      !gameData.players[playerId] ||
+      card === undefined ||
+      !gameData.players[playerId].canMove
+    )
+      return;
+    const move = await moveCard(cardIndex, playerId);
+    if (move) {
+      io.emit('cardPassed', gameData);
+    }
+    if (
+      gameData.players[playerId].cards.filter((el) => el.played == false)
+        .length == 0
+    ) {
+      console.log('won');
+      io.emit('gameWon', { playerId });
+    }
+  });
 
-    io.emit('cardsDealt', gameData);
+  socket.on('callUno', function (data) {
+    // console.log('called uno');
+    const { playerId } = data;
+    let secondPlayer =
+      playerId == gameData.player1 ? gameData.player2 : gameData.player1;
+    if (
+      gameData.players[playerId].cards.filter((el) => el.played == false)
+        .length == 1
+    ) {
+      console.log('1 uno');
+      gameData.players[playerId].calledUNO = true;
+    }
+    if (
+      gameData.players[secondPlayer].cards.filter((el) => el.played == false)
+        .length == 1 &&
+      !gameData.players[secondPlayer].calledUNO
+    ) {
+      console.log('2 uno');
+      addCard(secondPlayer)
+      //add card to a player
+      // socket.emit('addCard', { playerId: secondPlayer, uno: true });
+    }
   });
 
   socket.on('disconnect', function () {
     console.log('user disconnected');
-    // if (Object.keys(gameData.players).length == 0) return;
-    // console.log('gamecards ', gameData.gameCards.length);
   });
 });
 
@@ -121,7 +166,7 @@ server.listen(port, function () {
   console.log(`Listening on port ${port}`);
 });
 
-function moveCard(cardIndex, playerId) {
+async function moveCard(cardIndex, playerId) {
   let currentCard = gameData.currentCard;
   let secondPlayer =
     playerId == gameData.player1 ? gameData.player2 : gameData.player1;
@@ -137,8 +182,12 @@ function moveCard(cardIndex, playerId) {
     // console.log(gameData.players[playerId].cards[cardIndex]);
     return true;
   }
-  if (card.color !== currentCard.color && card.value !== currentCard.value && card.color !== 'wild') {
-    console.log('does not fit', {card, currentCard})
+  if (
+    card.color !== currentCard.color &&
+    card.value !== currentCard.value &&
+    card.color !== 'wild'
+  ) {
+    console.log('does not fit', { card, currentCard });
 
     return false;
   }
@@ -153,12 +202,12 @@ function moveCard(cardIndex, playerId) {
       }
       //add to chose color
       gameData.players[playerId].chooseColor = true;
-      io.emit('chooseColor', gameData)
+      io.emit('chooseColor', gameData);
       break;
     case 'Wild':
       //ask player to choose the color
       gameData.players[playerId].chooseColor = true;
-      io.emit('chooseColor', gameData)
+      io.emit('chooseColor', gameData);
       break;
     case 'draw':
       //add 2 cards to next player, next player skips move
@@ -178,7 +227,20 @@ function moveCard(cardIndex, playerId) {
       gameData.players[secondPlayer].canMove = true;
   }
   card.played = true;
-  gameData.currentCard = card
+  gameData.currentCard = card;
   gameData.move = { playerId, cardIndex };
   return true;
+}
+
+function addCard(playerId){
+  if (gameData.gameCards.length > 0) {
+    const card = gameData.gameCards.pop();
+    gameData.players[playerId].cards.push(card);
+    gameData.players[playerId].calledUNO = false;
+    for (const playerId in gameData.players) {
+      gameData.players[playerId].canMove =
+        !gameData.players[playerId].canMove;
+    }
+    io.emit('cardAdded', gameData);
+  }
 }

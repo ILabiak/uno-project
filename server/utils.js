@@ -12,6 +12,10 @@ const shuffle = (array) => {
     ];
   }
 
+  for(let el of array){
+    el.played = false
+  }
+
   return array;
 };
 

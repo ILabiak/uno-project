@@ -11,7 +11,7 @@ export default function Play(params) {
     const [cookies, setCookie] = useCookies();
     const [socket, setSocket] = useState(null);
     const [chooseColor, setChooseColor] = useState(false)
-    const [currentCard, setCurrentCard] = useState({ img: ' /cards/empty-card.svg' });
+    const [currentCard, setCurrentCard] = useState({ img: '/cards/empty-card.svg', color: 'white' });
     const [gameData, setGameData] = useState({ players: {}, gameCards: [] });
     const [player1Id, setPlayer1Id] = useState();
     const [player2Id, setPlayer2Id] = useState();
@@ -21,6 +21,15 @@ export default function Play(params) {
     const playgroundCardRef = useRef(null);
     const player1CardsRef = useRef([]);
     const player2CardsRef = useRef([]);
+
+    const colorToBackgroundColor = {
+        white: '#fff',
+        yellow: '#ffaa01',
+        red: '#ff5655',
+        blue: '#5555ff',
+        green: '#56aa56',
+        wild: '#000'
+      };
 
     useEffect(() => {
         const socketInstance = io.connect('http://localhost:8080/',);
@@ -63,6 +72,10 @@ export default function Play(params) {
             setGameData(data)
         })
 
+        socketInstance.on('colorChosen', (data) => {
+            setGameData(data)
+        })
+
         socketInstance.on('cardPassed', async (data) => {
             // console.log('cardPassed')
             setGameData(data)
@@ -88,13 +101,12 @@ export default function Play(params) {
     useEffect(() => {
         setPlayer1canMove(gameData.players[player1Id]?.canMove)
         setPlayer2canMove(gameData.players[player2Id]?.canMove)
+        setCurrentCard(gameData.currentCard);
         // console.log(gameData)
     }, [gameData])
 
     useEffect(() => {
-        if (gameData?.players[player1Id]?.chooseColor) {
-            setChooseColor(true)
-        }
+            setChooseColor(gameData?.players[player1Id]?.chooseColor)
         if (cardPassedEventOccurred && Object.keys(gameData.move).length !== 0) {
             // console.log(gameData.move)
             moveCard(gameData.move.cardIndex, gameData.move.playerId);
@@ -135,7 +147,7 @@ export default function Play(params) {
         ref.current[index].style.transform = transformStyle;
 
         // Wait for animations to complete
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await new Promise(resolve => setTimeout(resolve, 750));
 
         // Update the playground card
         setCurrentCard(gameData.currentCard);
@@ -144,6 +156,14 @@ export default function Play(params) {
         await new Promise(resolve => setTimeout(resolve, 50));
         ref.current[index].remove()
         cardToMove.played = true
+    }
+
+    async function setColor(color) {
+        socket.emit('playerChooseColor', { playerId: player1Id, color })
+    }
+
+    async function callUno() {
+        socket.emit('callUno', { playerId: player1Id })
     }
 
 
@@ -183,20 +203,23 @@ export default function Play(params) {
                 </div>
                 <div className='playgroundContainer'>
                     <div className='chooseColorContainer'>
-                        <div className='colorsGrid'>
-                            <div className='colorWrap'>
-                                <div className='color' style={{ backgroundColor: '#ffaa01' }}></div>
+                        {chooseColor && (
+                            <div className='colorsGrid'>
+                                <div className='colorWrap'>
+                                    <div className='color' style={{ backgroundColor: '#ffaa01' }} onClick={() => setColor('yellow')}></div>
+                                </div>
+                                <div className='colorWrap'>
+                                    <div className='color' style={{ backgroundColor: '#ff5655' }} onClick={() => setColor('red')}></div>
+                                </div>
+                                <div className='colorWrap'>
+                                    <div className='color' style={{ backgroundColor: '#5555ff' }} onClick={() => setColor('blue')}></div>
+                                </div>
+                                <div className='colorWrap'>
+                                    <div className='color' style={{ backgroundColor: '#56aa56' }} onClick={() => setColor('green')}></div>
+                                </div>
                             </div>
-                            <div className='colorWrap'>
-                                <div className='color' style={{ backgroundColor: '#ff5655' }}></div>
-                            </div>
-                            <div className='colorWrap'>
-                                <div className='color' style={{ backgroundColor: '#5555ff' }}></div>
-                            </div>
-                            <div className='colorWrap'>
-                                <div className='color' style={{ backgroundColor: '#56aa56' }}></div>
-                            </div>
-                        </div>
+                        )}
+
                     </div>
                     <div className='playgroundCards'>
                         <img onClick={addCard} className='addCardImgStatic' src="/cards/uno-card.svg" alt="green-7"></img>
@@ -204,22 +227,24 @@ export default function Play(params) {
                             className='playgroundCardImgStatic'
                             id='playgroundCard'
                             ref={playgroundCardRef}
-                            src={currentCard.img}
+                            src={currentCard?.img || '/cards/empty-card.svg'}
                             alt={"playground-card"}
                         ></img>
                     </div>
                     <div className='playgroundControlsContainer'>
                         <div className='playgroundControls'>
-                        <div className='colorWrap'>
-                            <div className='color' style={{ backgroundColor: '#fff' }}></div>
-                        </div>
-                        <div className='colorWrap'>
-                            <div className='color' style={{ backgroundColor: '#000' }}>
-                                <p>1</p>
+                            <div className='colorWrap'>
+                                <div className='color' style={{
+                                    backgroundColor: colorToBackgroundColor[currentCard?.color] || '#000'
+                                }}></div>
+                            </div>
+                            <div className='colorWrap'>
+                                <div className='color' onClick={() => callUno()} style={{ backgroundColor: '#000' }}>
+                                    <p>1</p>
+                                </div>
                             </div>
                         </div>
-                        </div>
- 
+
                     </div>
                 </div>
 

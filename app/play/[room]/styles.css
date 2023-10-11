@@ -187,6 +187,11 @@
   /* border: 2px solid white; */
 }
 
+.color:hover {
+  box-shadow: 0 0 30px 15px #48abe0;
+  filter: brightness(1.25);
+}
+
 .color p {
   transform:rotate(-45deg);
 }

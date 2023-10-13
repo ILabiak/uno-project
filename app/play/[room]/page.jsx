@@ -1,6 +1,7 @@
 
 "use client"
 import './styles.css';
+import PlayerCards from '@/components/PlayerCards';
 import React, { useState, useRef, useEffect } from 'react';
 import io from 'socket.io-client';
 import { useCookies } from 'react-cookie';
@@ -29,7 +30,7 @@ export default function Play(params) {
         blue: '#5555ff',
         green: '#56aa56',
         wild: '#000'
-      };
+    };
 
     useEffect(() => {
         const socketInstance = io.connect('http://localhost:8080/',);
@@ -106,7 +107,7 @@ export default function Play(params) {
     }, [gameData])
 
     useEffect(() => {
-            setChooseColor(gameData?.players[player1Id]?.chooseColor)
+        setChooseColor(gameData?.players[player1Id]?.chooseColor)
         if (cardPassedEventOccurred && Object.keys(gameData.move).length !== 0) {
             // console.log(gameData.move)
             moveCard(gameData.move.cardIndex, gameData.move.playerId);
@@ -180,16 +181,8 @@ export default function Play(params) {
                 <div className='playerCardsContainer'>
                     <div className='cardsContainer'>
                         {gameData?.players && gameData.players[player2Id]?.cards && (
-                            gameData.players[player2Id].cards.map((el, index) => (
-                                <img className={`cardImg top fadeIn ${el.played ? 'hidden' : ''}`}
-                                    src='/cards/uno-card.svg' alt='123'
-                                    key={index}
-                                    ref={elem => player2CardsRef.current[index] = elem
-                                    }></img>
-                            )
-                            )
-                        )
-                        }
+                            <PlayerCards playerData={gameData.players[player2Id]} onCardClick={passCard} cardsRef={player2CardsRef} opponentCards={true} />
+                        )}
                     </div>
                     <div className='playerInfoContainer'>
                         <div className='playerNameContainer'>
@@ -263,16 +256,7 @@ export default function Play(params) {
                     </div>
                     <div className='cardsContainer'>
                         {gameData?.players && gameData.players[player1Id]?.cards && (
-                            gameData.players[player1Id].cards.map((el, index) => (
-                                <img
-                                    className={`cardImg bottom fadeIn ${el.played ? 'hidden' : ''}`}
-                                    src={el.img}
-                                    alt='123'
-                                    key={index}
-                                    ref={elem => player1CardsRef.current[index] = elem}
-                                    onClick={() => passCard(index)}
-                                />
-                            ))
+                            <PlayerCards playerData={gameData.players[player1Id]} onCardClick={passCard} cardsRef={player1CardsRef} />
                         )
                         }
                     </div>

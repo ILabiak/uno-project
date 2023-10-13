@@ -5,6 +5,9 @@ import PlayerCards from '@/components/PlayerCards';
 import Player1Info from '@/components/Player1Info';
 import Player2Info from '@/components/Player2Info';
 import PlaygroundControls from '@/components/PlaygroundControls';
+import ChooseColor from '@/components/ChooseColor';
+import PlaygroundCards from '@/components/PlaygroundCards';
+
 import React, { useState, useRef, useEffect } from 'react';
 import io from 'socket.io-client';
 import { useCookies } from 'react-cookie';
@@ -52,7 +55,6 @@ export default function Play(params) {
         });
 
         socketInstance.on('cardsDealt', (data) => {
-            // console.log('Cards dealt', data);
             setGameData(data)
             for (const player in data.players) {
                 if (player === cookies.playerId) {
@@ -97,15 +99,12 @@ export default function Play(params) {
         setPlayer1canMove(gameData.players[player1Id]?.canMove)
         setPlayer2canMove(gameData.players[player2Id]?.canMove)
         setCurrentCard(gameData.currentCard);
-        // console.log(gameData)
     }, [gameData])
 
     useEffect(() => {
         setChooseColor(gameData?.players[player1Id]?.chooseColor)
         if (cardPassedEventOccurred && Object.keys(gameData.move).length !== 0) {
-            // console.log(gameData.move)
             moveCard(gameData.move.cardIndex, gameData.move.playerId);
-
             setCardPassedEventOccurred(false);
         }
     }, [gameData, cardPassedEventOccurred]);
@@ -117,6 +116,14 @@ export default function Play(params) {
 
     async function passCard(index) {
         socket.emit('passcard', { playerId: player1Id, cardIndex: index })
+    }
+
+    async function setColor(color) {
+        socket.emit('playerChooseColor', { playerId: player1Id, color })
+    }
+
+    async function callUno() {
+        socket.emit('callUno', { playerId: player1Id })
     }
 
     async function moveCard(index, player) {
@@ -153,13 +160,6 @@ export default function Play(params) {
         cardToMove.played = true
     }
 
-    async function setColor(color) {
-        socket.emit('playerChooseColor', { playerId: player1Id, color })
-    }
-
-    async function callUno() {
-        socket.emit('callUno', { playerId: player1Id })
-    }
 
 
     return (
@@ -167,56 +167,28 @@ export default function Play(params) {
             className='main'
             style={{
                 backgroundImage: `url(../game-background1.jpeg)`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center'
             }}
         >
             <div className='contentContainer'>
+
                 <div className='playerCardsContainer'>
                     {gameData?.players && gameData.players[player2Id]?.cards && (
                         <PlayerCards playerData={gameData.players[player2Id]} onCardClick={passCard} cardsRef={player2CardsRef} opponentCards={true} />
                     )}
                     <Player2Info canMove={player2canMove} />
                 </div>
-                <div className='playgroundContainer'>
-                    <div className='chooseColorContainer'>
-                        {chooseColor && (
-                            <div className='colorsGrid'>
-                                <div className='colorWrap'>
-                                    <div className='color' style={{ backgroundColor: '#ffaa01' }} onClick={() => setColor('yellow')}></div>
-                                </div>
-                                <div className='colorWrap'>
-                                    <div className='color' style={{ backgroundColor: '#ff5655' }} onClick={() => setColor('red')}></div>
-                                </div>
-                                <div className='colorWrap'>
-                                    <div className='color' style={{ backgroundColor: '#5555ff' }} onClick={() => setColor('blue')}></div>
-                                </div>
-                                <div className='colorWrap'>
-                                    <div className='color' style={{ backgroundColor: '#56aa56' }} onClick={() => setColor('green')}></div>
-                                </div>
-                            </div>
-                        )}
 
-                    </div>
-                    <div className='playgroundCards'>
-                        <img onClick={addCard} className='addCardImgStatic' src="/cards/uno-card.svg" alt="green-7"></img>
-                        <img
-                            className='playgroundCardImgStatic'
-                            id='playgroundCard'
-                            ref={playgroundCardRef}
-                            src={currentCard?.img || '/cards/empty-card.svg'}
-                            alt={"playground-card"}
-                        ></img>
-                    </div>
-                    <PlaygroundControls currentCard={currentCard} callUno={callUno}/>
+                <div className='playgroundContainer'>
+                    <ChooseColor chooseColor={chooseColor} setColor={setColor} />
+                    <PlaygroundCards addCard={addCard} playgroundCardRef={playgroundCardRef} currentCard={currentCard} />
+                    <PlaygroundControls currentCard={currentCard} callUno={callUno} />
                 </div>
 
                 <div className='playerCardsContainer'>
                     <Player1Info canMove={player1canMove} />
                     {gameData?.players && gameData.players[player1Id]?.cards && (
                         <PlayerCards playerData={gameData.players[player1Id]} onCardClick={passCard} cardsRef={player1CardsRef} />
-                    )
-                    }
+                    )}
                 </div>
             </div>
         </main>

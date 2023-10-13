@@ -2,6 +2,9 @@
 "use client"
 import './styles.css';
 import PlayerCards from '@/components/PlayerCards';
+import Player1Info from '@/components/Player1Info';
+import Player2Info from '@/components/Player2Info';
+import PlaygroundControls from '@/components/PlaygroundControls';
 import React, { useState, useRef, useEffect } from 'react';
 import io from 'socket.io-client';
 import { useCookies } from 'react-cookie';
@@ -22,15 +25,6 @@ export default function Play(params) {
     const playgroundCardRef = useRef(null);
     const player1CardsRef = useRef([]);
     const player2CardsRef = useRef([]);
-
-    const colorToBackgroundColor = {
-        white: '#fff',
-        yellow: '#ffaa01',
-        red: '#ff5655',
-        blue: '#5555ff',
-        green: '#56aa56',
-        wild: '#000'
-    };
 
     useEffect(() => {
         const socketInstance = io.connect('http://localhost:8080/',);
@@ -179,21 +173,10 @@ export default function Play(params) {
         >
             <div className='contentContainer'>
                 <div className='playerCardsContainer'>
-                    <div className='cardsContainer'>
-                        {gameData?.players && gameData.players[player2Id]?.cards && (
-                            <PlayerCards playerData={gameData.players[player2Id]} onCardClick={passCard} cardsRef={player2CardsRef} opponentCards={true} />
-                        )}
-                    </div>
-                    <div className='playerInfoContainer'>
-                        <div className='playerNameContainer'>
-                            {player2canMove && (
-                                <div className='canMove' style={{ marginRight: '0px', marginLeft: '10px' }}></div>
-                            )}
-
-                            <p>Player 2</p>
-                        </div>
-                        <div className='line'></div>
-                    </div>
+                    {gameData?.players && gameData.players[player2Id]?.cards && (
+                        <PlayerCards playerData={gameData.players[player2Id]} onCardClick={passCard} cardsRef={player2CardsRef} opponentCards={true} />
+                    )}
+                    <Player2Info canMove={player2canMove} />
                 </div>
                 <div className='playgroundContainer'>
                     <div className='chooseColorContainer'>
@@ -225,41 +208,15 @@ export default function Play(params) {
                             alt={"playground-card"}
                         ></img>
                     </div>
-                    <div className='playgroundControlsContainer'>
-                        <div className='playgroundControls'>
-                            <div className='colorWrap'>
-                                <div className='color' style={{
-                                    backgroundColor: colorToBackgroundColor[currentCard?.color] || '#000'
-                                }}></div>
-                            </div>
-                            <div className='colorWrap'>
-                                <div className='colorUno' onClick={() => callUno()} style={{ backgroundColor: '#000' }}>
-                                    <p>1</p>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
+                    <PlaygroundControls currentCard={currentCard} callUno={callUno}/>
                 </div>
 
                 <div className='playerCardsContainer'>
-                    <div className='playerInfoContainer'>
-                        <div className='line' style={{ marginTop: '0', marginBottom: '5px' }}></div>
-                        <div className='playerNameContainer'>
-                            <p style={{ marginLeft: '10px', marginRight: 'auto' }}>Player 1</p>
-                            {chooseColor && (<p style={{ marginLeft: '10px', marginRight: 'auto' }}>chooseColor</p>)}
-                            {player1canMove && (
-                                <div className='canMove'></div>
-                            )}
-                        </div>
-
-                    </div>
-                    <div className='cardsContainer'>
-                        {gameData?.players && gameData.players[player1Id]?.cards && (
-                            <PlayerCards playerData={gameData.players[player1Id]} onCardClick={passCard} cardsRef={player1CardsRef} />
-                        )
-                        }
-                    </div>
+                    <Player1Info canMove={player1canMove} />
+                    {gameData?.players && gameData.players[player1Id]?.cards && (
+                        <PlayerCards playerData={gameData.players[player1Id]} onCardClick={passCard} cardsRef={player1CardsRef} />
+                    )
+                    }
                 </div>
             </div>
         </main>

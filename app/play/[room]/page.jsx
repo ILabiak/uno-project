@@ -7,6 +7,7 @@ import Player2Info from '@/components/Player2Info';
 import PlaygroundControls from '@/components/PlaygroundControls';
 import ChooseColor from '@/components/ChooseColor';
 import PlaygroundCards from '@/components/PlaygroundCards';
+import GameResult from '@/components/GameResult';
 
 import React, { useState, useRef, useEffect } from 'react';
 import io from 'socket.io-client';
@@ -28,6 +29,8 @@ export default function Play(params) {
     const playgroundCardRef = useRef(null);
     const player1CardsRef = useRef([]);
     const player2CardsRef = useRef([]);
+    const [gameEnded, setGameEnded] = useState(false);
+    const [wonGame, setWonGame] = useState(false)
 
     useEffect(() => {
         const socketInstance = io.connect('http://localhost:8080/',);
@@ -56,6 +59,7 @@ export default function Play(params) {
 
         socketInstance.on('cardsDealt', (data) => {
             setGameData(data)
+            console.log('cards dealt')
             for (const player in data.players) {
                 if (player === cookies.playerId) {
                     setPlayer1Id(player)
@@ -84,6 +88,13 @@ export default function Play(params) {
             setGameData(data)
         })
 
+        socketInstance.on('gameEnded', async (data) => {
+            let id = cookies.playerId
+            let gameWon = data.winner === id
+            setWonGame(gameWon)
+            setGameEnded(true)
+        })
+
 
         setSocket(socketInstance);
 
@@ -108,6 +119,8 @@ export default function Play(params) {
             setCardPassedEventOccurred(false);
         }
     }, [gameData, cardPassedEventOccurred]);
+
+    
 
 
     async function addCard() {
@@ -191,6 +204,9 @@ export default function Play(params) {
                         <PlayerCards playerData={gameData.players[player1Id]} onCardClick={passCard} cardsRef={player1CardsRef} />
                     )}
                 </div>
+                    
+                <GameResult gameEnded={gameEnded} won={wonGame} />
+
             </div>
         </main>
     );

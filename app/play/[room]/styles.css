@@ -61,6 +61,7 @@
   width: auto;
   transition: 0.5s;
   cursor: pointer;
+  z-index: 10;
   /* border: 2px solid white; */
 }
 
@@ -287,4 +288,20 @@
 
 .hidden {
   display: none;
+}
+
+.gameResultContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50%;
+  height: 50%;
+  background-color: #2a3272;
+  border: 2px solid rgb(255, 255, 255);
+  border-radius: 10px;
+}
+
+.gameResultContainer span {
+  text-align: center;
+  font-size: 3rem;
 }

@@ -14,7 +14,7 @@ let cardDeck = require('./deck.json')?.deck;
 
 const userLimit = 2;
 
-const gameData = {
+let gameData = {
   player1: null,
   player2: null,
   players: {},
@@ -71,7 +71,7 @@ io.on('connection', (socket) => {
         }
       }
       while (
-        gameData.currentCard.img == '/cards/empty-card.svg' ||
+        gameData?.currentCard?.img == '/cards/empty-card.svg' ||
         gameData.currentCard.color == 'wild'
       ) {
         gameData.currentCard = gameData.gameCards.pop();
@@ -128,8 +128,16 @@ io.on('connection', (socket) => {
       gameData.players[playerId].cards.filter((el) => el.played == false)
         .length == 0
     ) {
-      console.log('won');
-      io.emit('gameWon', { playerId });
+      console.log('game ended');
+      io.emit('gameEnded', { winner:playerId });
+      gameData = {
+        player1: null,
+        player2: null,
+        players: {},
+        gameCards: [],
+        currentCard: { img: '/cards/empty-card.svg', color: 'white' },
+        move: {},
+      };
     }
   });
 

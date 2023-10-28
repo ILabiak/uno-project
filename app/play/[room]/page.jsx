@@ -128,7 +128,6 @@ export default function Play(params) {
 
     async function moveCard(index, player) {
         let ref, cardToMove;
-        console.log(JSON.stringify(gameData))
         if (player === player1Id) {
             ref = player1CardsRef
             cardToMove = gameData.players[player1Id].cards[index];
@@ -141,15 +140,17 @@ export default function Play(params) {
         ref.current[index].className = 'playgroundCardImgStatic';
         const playgroundCardPosition = playgroundCardRef.current.getBoundingClientRect();
         const moveCardPosition = ref.current[index].getBoundingClientRect();
+        const cardHeight = moveCardPosition.height;
+        // console.log({playgroundCardPosition, moveCardPosition, calcY: cardHeight})
 
         // Calculate the transform property to move the card to the playground card's position
-        const transformStyle = `translate(${playgroundCardPosition.left - moveCardPosition.left - 30}px, ${playgroundCardPosition.y - moveCardPosition.y - 10}px)`;
+        const transformStyle = `translate(${playgroundCardPosition.left - moveCardPosition.left - 30}px, ${playgroundCardPosition.top - moveCardPosition.top -15}px)`;
 
         // Apply the transform style to the selected card
         ref.current[index].style.transform = transformStyle;
 
         // Wait for animations to complete
-        await new Promise(resolve => setTimeout(resolve, 750));
+        await new Promise(resolve => setTimeout(resolve, 650));
 
         // Update the playground card
         setCurrentCard(gameData.currentCard);

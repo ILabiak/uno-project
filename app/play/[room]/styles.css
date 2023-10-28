@@ -46,7 +46,6 @@
   width: 80vw;
 }
 
-
 .cardsContainer {
   height: 100%;
   display: flex;
@@ -61,7 +60,15 @@
   height: 200px;
   width: auto;
   transition: 0.5s;
+  cursor: pointer;
   /* border: 2px solid white; */
+}
+
+.playgroundCardImgStatic {
+  height: 200px;
+  width: auto;
+  transition: 0.5s ease;
+  cursor: pointer;
 }
 
 .cardImg.top:hover {
@@ -260,12 +267,7 @@
   cursor: pointer;
 }
 
-.playgroundCardImgStatic {
-  height: 200px;
-  width: auto;
-  transition: 0.5s ease;
-  cursor: pointer;
-}
+
 
 @keyframes fadeIn {
   from {

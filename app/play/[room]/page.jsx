@@ -9,6 +9,7 @@ import PlaygroundControls from '@/components/PlaygroundControls';
 import ChooseColor from '@/components/ChooseColor';
 import PlaygroundCards from '@/components/PlaygroundCards';
 import GameResult from '@/components/GameResult';
+import PlayerLeft from '@/components/PlayerLeft';
 
 import React, { useState, useRef, useEffect } from 'react';
 import io from 'socket.io-client';
@@ -16,7 +17,7 @@ import { useCookies } from 'react-cookie';
 import { v4 as uuidv4 } from 'uuid';
 
 
-export default function Play(params) {
+export default function Play({params}) {
     const [cookies, setCookie] = useCookies();
     const [socket, setSocket] = useState(null);
     const [chooseColor, setChooseColor] = useState(false)
@@ -31,7 +32,8 @@ export default function Play(params) {
     const player1CardsRef = useRef([]);
     const player2CardsRef = useRef([]);
     const [gameEnded, setGameEnded] = useState(false);
-    const [wonGame, setWonGame] = useState(false)
+    const [wonGame, setWonGame] = useState(false);
+    const [playerLeft, setPlayerLeft] = useState(false);
 
     useEffect(() => {
         const socketInstance = io.connect('http://localhost:8080/',);
@@ -49,8 +51,7 @@ export default function Play(params) {
                 })
             }
             id = cookies.playerId;
-            console.log('playerId ', id)
-            socketInstance.emit('play', { playerId: id })
+            socketInstance.emit('play', { playerId: id, room: params.room })
 
         });
 
@@ -94,6 +95,11 @@ export default function Play(params) {
             let gameWon = data.winner === id
             setWonGame(gameWon)
             setGameEnded(data.gameEnded)
+        })
+
+        socketInstance.on('playerLeft', () => {
+            console.log('Player Left')
+            setPlayerLeft(true)
         })
 
 
@@ -211,6 +217,8 @@ export default function Play(params) {
                 </div>
                     
                 <GameResult gameEnded={gameEnded} won={wonGame} />
+
+                <PlayerLeft playerLeft={playerLeft}/>
 
             </div>
         </main>

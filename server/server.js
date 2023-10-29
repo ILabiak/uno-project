@@ -14,6 +14,8 @@ let cardDeck = require('./deck.json')?.deck;
 
 const userLimit = 2;
 
+let mainRoom;
+
 let gameData = {
   player1: null,
   player2: null,
@@ -22,17 +24,16 @@ let gameData = {
   currentCard: { img: '/cards/empty-card.svg', color: 'white' },
   move: {},
   gameEnded: false,
-  winner: null
+  winner: null,
 };
 
 io.on('connection', (socket) => {
   console.log('user connected');
 
   socket.on('play', function (data) {
-    const playerId = data.playerId;
-    console.log(playerId);
-
-    if(gameData.gameEnded){
+    const { playerId, room } = data;
+    console.log('play', playerId);
+    if (gameData.gameEnded) {
       console.log('Game ended, cannot connect');
       socket.disconnect(true); // Disconnect the new user
       return;
@@ -48,6 +49,12 @@ io.on('connection', (socket) => {
       }
       console.log('user does not exist');
       // console.log(Object.keys(gameData.players));
+      if (!mainRoom) {
+        mainRoom = room;
+      } else if (mainRoom !== room) {
+        console.log('Invalid room');
+        return;
+      }
       gameData.players[playerId] = {
         name: '1',
         socket: socket.id,
@@ -55,6 +62,7 @@ io.on('connection', (socket) => {
         canMove: Object.keys(gameData.players).length == 1 ? true : false,
         chooseColor: false,
         calledUNO: false,
+        playerId: playerId,
       };
       Object.keys(gameData.players).length == 1
         ? (gameData.player1 = playerId)
@@ -65,7 +73,7 @@ io.on('connection', (socket) => {
       gameData.players[playerId].cards.length === 0 &&
       Object.keys(gameData.players).length == userLimit
     ) {
-      gameData.gameCards = shuffle(cardDeck);
+      gameData.gameCards = shuffle([...cardDeck]);
 
       for (const playerId in gameData.players) {
         if (gameData.players.hasOwnProperty(playerId)) {
@@ -89,14 +97,11 @@ io.on('connection', (socket) => {
 
   socket.on('addCard', function (data) {
     const playerId = data.playerId;
-    if (
-      !gameData.players[playerId] ||
-      !gameData.players[playerId]?.canMove
-    ){
+    if (!gameData.players[playerId] || !gameData.players[playerId]?.canMove) {
       // console.log('card can\'t be added')
-      return
+      return;
     }
-    addCard(playerId)
+    addCard(playerId);
   });
 
   socket.on('playerChooseColor', function (data) {
@@ -120,7 +125,7 @@ io.on('connection', (socket) => {
   socket.on('passcard', async function (data) {
     const playerId = data.playerId;
     const cardIndex = data.cardIndex;
-    let card = gameData.players[playerId].cards[cardIndex];
+    let card = gameData.players[playerId]?.cards[cardIndex];
     if (
       !gameData.players[playerId] ||
       card === undefined ||
@@ -160,38 +165,48 @@ io.on('connection', (socket) => {
       !gameData.players[secondPlayer].calledUNO
     ) {
       console.log('2 uno');
-      addCard(secondPlayer)
+      addCard(secondPlayer);
       //add card to a player
       // socket.emit('addCard', { playerId: secondPlayer, uno: true });
     }
   });
 
-  socket.on('disconnect', function () {
-    if(gameData.gameEnded){
-      const playerIdToDelete = Object.keys(gameData.players).find(
-        playerId => gameData.players[playerId].socket === socket.id
-      );
-      
-      if (playerIdToDelete) {
-        delete gameData.players[playerIdToDelete];
-      }
-
-      if (Object.keys(gameData.players).length == 0){
-        gameData = {
-          player1: null,
-          player2: null,
-          players: {},
-          gameCards: [],
-          currentCard: { img: '/cards/empty-card.svg', color: 'white' },
-          move: {},
-          gameEnded: false,
-          winner: null
-        };
-
-        cardDeck = require('./deck.json')?.deck;
-      }
+  socket.on('getRooms', function () {
+    if (mainRoom) {
+      io.emit('sendRooms', {
+        name: mainRoom,
+        players: Object.keys(gameData.players).length,
+      });
     }
-    console.log('user disconnected');
+  });
+
+  socket.on('disconnect', function () {
+    const playerIdToDelete = Object.keys(gameData.players).find(
+      (playerId) => gameData.players[playerId].socket === socket.id
+    );
+
+    if (playerIdToDelete) {
+      delete gameData.players[playerIdToDelete];
+      gameData = {
+        player1: null,
+        player2: null,
+        players: {},
+        gameCards: [],
+        currentCard: { img: '/cards/empty-card.svg', color: 'white' },
+        move: {},
+        gameEnded: false,
+        winner: null,
+      };
+      mainRoom = undefined;
+
+      io.emit('playerLeft')
+
+      console.log('carddeck l',cardDeck.length)
+    }
+
+
+
+    console.log(`user ${socket.id} disconnected`);
   });
 });
 
@@ -265,14 +280,13 @@ async function moveCard(cardIndex, playerId) {
   return true;
 }
 
-function addCard(playerId){
+function addCard(playerId) {
   if (gameData.gameCards.length > 0) {
     const card = gameData.gameCards.pop();
     gameData.players[playerId].cards.push(card);
     gameData.players[playerId].calledUNO = false;
     for (const playerId in gameData.players) {
-      gameData.players[playerId].canMove =
-        !gameData.players[playerId].canMove;
+      gameData.players[playerId].canMove = !gameData.players[playerId].canMove;
     }
     io.emit('cardAdded', gameData);
   }

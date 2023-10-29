@@ -46,6 +46,8 @@
   color: rgb(0, 20, 48);
   font-size: 2rem;
   text-align: center;
+  vertical-align: middle;
+  line-height: 90px;
   border: none;
 
 }

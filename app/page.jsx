@@ -12,7 +12,7 @@ export default function Home() {
       <div className={styles.contentContainer}>
         <img className={styles.gameLogo} alt='logo' src="/game_logo.png" />
         <div className={styles.playButtonContainer}>
-          <button className={styles.playButton}>Play</button>
+          <a className={styles.playButton} href='/play' >Play</a>
         </div>
       </div>
     </main>

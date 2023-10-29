@@ -21,6 +21,8 @@ let gameData = {
   gameCards: [],
   currentCard: { img: '/cards/empty-card.svg', color: 'white' },
   move: {},
+  gameEnded: false,
+  winner: null
 };
 
 io.on('connection', (socket) => {
@@ -30,6 +32,11 @@ io.on('connection', (socket) => {
     const playerId = data.playerId;
     console.log(playerId);
 
+    if(gameData.gameEnded){
+      console.log('Game ended, cannot connect');
+      socket.disconnect(true); // Disconnect the new user
+      return;
+    }
     if (gameData.players.hasOwnProperty(playerId)) {
       gameData.players[playerId].socket = socket.id;
       console.log('user exists');
@@ -72,7 +79,7 @@ io.on('connection', (socket) => {
       }
       while (
         gameData?.currentCard?.img == '/cards/empty-card.svg' ||
-        gameData.currentCard.color == 'wild'
+        gameData.currentCard?.color == 'wild'
       ) {
         gameData.currentCard = gameData.gameCards.pop();
       }
@@ -129,15 +136,9 @@ io.on('connection', (socket) => {
         .length == 0
     ) {
       console.log('game ended');
-      io.emit('gameEnded', { winner:playerId });
-      gameData = {
-        player1: null,
-        player2: null,
-        players: {},
-        gameCards: [],
-        currentCard: { img: '/cards/empty-card.svg', color: 'white' },
-        move: {},
-      };
+      gameData.gameEnded = true;
+      gameData.winner = playerId;
+      io.emit('gameEnded', gameData);
     }
   });
 
@@ -166,6 +167,30 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', function () {
+    if(gameData.gameEnded){
+      const playerIdToDelete = Object.keys(gameData.players).find(
+        playerId => gameData.players[playerId].socket === socket.id
+      );
+      
+      if (playerIdToDelete) {
+        delete gameData.players[playerIdToDelete];
+      }
+
+      if (Object.keys(gameData.players).length == 0){
+        gameData = {
+          player1: null,
+          player2: null,
+          players: {},
+          gameCards: [],
+          currentCard: { img: '/cards/empty-card.svg', color: 'white' },
+          move: {},
+          gameEnded: false,
+          winner: null
+        };
+
+        cardDeck = require('./deck.json')?.deck;
+      }
+    }
     console.log('user disconnected');
   });
 });

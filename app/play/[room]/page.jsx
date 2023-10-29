@@ -92,7 +92,7 @@ export default function Play(params) {
             let id = cookies.playerId
             let gameWon = data.winner === id
             setWonGame(gameWon)
-            setGameEnded(true)
+            setGameEnded(data.gameEnded)
         })
 
 
@@ -109,6 +109,7 @@ export default function Play(params) {
     useEffect(() => {
         setPlayer1canMove(gameData.players[player1Id]?.canMove)
         setPlayer2canMove(gameData.players[player2Id]?.canMove)
+        setGameEnded(gameData.gameEnded)
         setCurrentCard(gameData.currentCard);
     }, [gameData])
 
@@ -149,6 +150,9 @@ export default function Play(params) {
             cardToMove = gameData.players[player2Id].cards[index];
         }
 
+        if(!ref.current[index]){
+            return;
+        }
         // Get the position of the playground card
         ref.current[index].className = 'playgroundCardImgStatic';
         const playgroundCardPosition = playgroundCardRef.current.getBoundingClientRect();

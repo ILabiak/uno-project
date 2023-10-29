@@ -36,9 +36,11 @@ export default function Play({params}) {
     const [playerLeft, setPlayerLeft] = useState(false);
 
     useEffect(() => {
-        const socketInstance = io.connect('https://a87a-92-119-112-26.ngrok-free.app/',{
-            withCredentials: true,
-          });
+        const socketInstance = io.connect('https://a87a-92-119-112-26.ngrok-free.app', {
+            extraHeaders:{
+                "ngrok-skip-browser-warning": "69420"
+            }
+        });
 
         socketInstance.on('connect', async () => {
             console.log('Connected to the server');

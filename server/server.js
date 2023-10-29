@@ -2,9 +2,8 @@ const app = require('express')();
 const server = require('http').createServer(app);
 const io = require('socket.io')(server, {
   cors: {
-    origin: 'https://uno-project.vercel.app/',
+    origin: ['http://localhost:3000', 'https://uno-project.vercel.app/', 'http://uno-project.vercel.app/'],
     methods: ['GET', 'POST'],
-    credentials: true
   },
 });
 

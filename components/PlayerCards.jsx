@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import Card from './Card';
 
 function PlayerCards({ playerData, onCardClick, cardsRef, opponentCards }) {

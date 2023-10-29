@@ -23,7 +23,7 @@
   flex-direction: column;
   height: 60vh;
   width: 80vw;
-  border: 2px solid white;
+  /* border: 2px solid white; */
 }
 
 .roomsTitle {

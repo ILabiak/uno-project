@@ -39,7 +39,8 @@ export default function Play({params}) {
         const socketInstance = io.connect('https://a87a-92-119-112-26.ngrok-free.app', {
             extraHeaders:{
                 "ngrok-skip-browser-warning": "69420"
-            }
+            },
+            transports: ['websocket', 'polling', 'flashsocket']
         });
 
         socketInstance.on('connect', async () => {

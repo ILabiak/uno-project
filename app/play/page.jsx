@@ -14,7 +14,7 @@ export default function Play() {
             extraHeaders:{
                 "ngrok-skip-browser-warning": "69420"
             },
-            transports: ['polling']
+            transports: ['websocket', 'polling', 'flashsocket']
         });
 
         socketInstance.on('connect', async () => {

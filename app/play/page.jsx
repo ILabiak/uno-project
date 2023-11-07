@@ -10,7 +10,7 @@ export default function Play() {
     const [room, setRoom] = useState(null)
 
     useEffect(() => {
-        const socketInstance = io.connect('https://a87a-92-119-112-26.ngrok-free.app', {
+        const socketInstance = io.connect('wss://e3d6-92-119-112-26.ngrok-free.app', {
             extraHeaders:{
                 "ngrok-skip-browser-warning": "69420"
             },
